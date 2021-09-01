@@ -28,6 +28,7 @@ class HouseRenderer {
     {
         echo '<span style="opacity: 0">' . str_repeat(self::CHAR_BRICK, $width) . '</span>';
     }
+
     private static function renderWalls(int $height, int $width): void
     {
         for ($i = 0; $i < $height; $i++) {
