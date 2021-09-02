@@ -19,13 +19,13 @@ class HouseBuilder
         $roofString = '';
         $maxTipSize = (int)floor($wallWidth / 2);
 
-        // Render the max amount of narrowing roof tip possible
+        // Build the max amount of narrowing roof tip possible
         for ($i = min([$height, $maxTipSize]); $i > 0; $i--) {
             $roofString .= self::insertSpace($i);
-            $roofString .= str_repeat(self::CHAR_BRICK, $wallWidth - ($i * 2)) . self::CHAR_BREAK;
+            $roofString .= self::buildWalls(1, $wallWidth - ($i * 2)));
         }
 
-        // Render the excess height as walls
+        // Build the excess roof height as additional walls
         $roofString .= self::buildWalls($height - $maxTipSize, $wallWidth);
 
         return $roofString;
