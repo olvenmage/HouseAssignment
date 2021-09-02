@@ -1,44 +1,55 @@
 <?php
 
-class HouseRenderer {
+class HouseBuilder
+{
     private const CHAR_BRICK = 'O';
     private const CHAR_BREAK = '<br>';
+    private const TEMPLATE_SPACE = '<span style="opacity: 0">%s</span>';
 
-    public static function render(int $roofHeight, int $wallHeight, int $wallWidth): void
+    public static function build(int $roofHeight, int $wallHeight, int $wallWidth): string
     {
-        self::renderRoof($roofHeight, $wallWidth);
-        self::renderWalls($wallHeight, $wallWidth);
+        $houseString = self::buildRoof($roofHeight, $wallWidth);
+        $houseString .= self::buildWalls($wallHeight, $wallWidth);
+
+        return $houseString;
     }
 
-    private static function renderRoof(int $height, int $wallWidth): void
+    private static function buildRoof(int $height, int $wallWidth): string
     {
-        $maxTipSize = floor($wallWidth / 2);
+        $roofString = '';
+        $maxTipSize = (int)floor($wallWidth / 2);
 
         // Render the max amount of narrowing roof tip possible
-        for ($i = min([$height, $maxTipSize]); $i > 0 ; $i--) {
-            self::renderSpace($i);
-            echo str_repeat(self::CHAR_BRICK, $wallWidth - ($i * 2)) . self::CHAR_BREAK;
+        for ($i = min([$height, $maxTipSize]); $i > 0; $i--) {
+            $roofString .= self::insertSpace($i);
+            $roofString .= str_repeat(self::CHAR_BRICK, $wallWidth - ($i * 2)) . self::CHAR_BREAK;
         }
 
         // Render the excess height as walls
-        self::renderWalls($height - $maxTipSize, $wallWidth);
+        $roofString .= self::buildWalls($height - $maxTipSize, $wallWidth);
+
+        return $roofString;
     }
 
-    private static function renderSpace(int $width): void
+    private static function insertSpace(int $width): string
     {
-        echo '<span style="opacity: 0">' . str_repeat(self::CHAR_BRICK, $width) . '</span>';
+        return sprintf(self::TEMPLATE_SPACE, str_repeat(self::CHAR_BRICK, $width));
     }
 
-    private static function renderWalls(int $height, int $width): void
+    private static function buildWalls(int $height, int $width): string
     {
+        $wallString = '';
+
         for ($i = 0; $i < $height; $i++) {
-            echo str_repeat(self::CHAR_BRICK, $width) . self::CHAR_BREAK;
+            $wallString .= str_repeat(self::CHAR_BRICK, $width) . self::CHAR_BREAK;
         }
+
+        return $wallString;
     }
 }
 
-HouseRenderer::render(2, 5, 15);
+echo HouseBuilder::build(2, 5, 15);
 echo '<br>';
-HouseRenderer::render(5, 5, 7);
+echo HouseBuilder::build(5, 5, 7);
 echo '<br>';
-HouseRenderer::render(15, 10, 30);
+echo HouseBuilder::build(15, 10, 30);
